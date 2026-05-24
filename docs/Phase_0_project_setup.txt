@@ -1,0 +1,29 @@
+Phase 0 :
+Project Career Match 
+Idea:
+
+AI-powered career platform
+
+• LinkedIn-style profiles
+• Multiple resume upload
+• AI resume analysis
+• Resume-job matching
+• Auto application filling
+• Career recommendations
+
+Tech stack chosen:
+
+Frontend:
+Next.js + React + TypeScript
+
+Backend:
+Java + Spring Boot
+
+Database:
+PostgreSQL
+
+Communication:
+Axios + REST APIs
+
+Future AI:
+OpenAI API + NLP + Vector Search

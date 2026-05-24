@@ -1,0 +1,22 @@
+Phase 1: Project structure creation
+
+Created:
+
+Career-Match/
+
+backend/
+frontend/
+
+Backend:
+
+Spring Boot project
+
+Frontend:
+
+Next.js App Router project
+
+Architecture:
+
+Frontend
+    ↓
+Backend

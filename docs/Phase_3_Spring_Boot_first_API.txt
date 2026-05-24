@@ -1,0 +1,25 @@
+Installed:
+
+Axios
+
+Created:
+
+src/services/api.ts
+
+Code:
+
+const api = axios.create({
+baseURL:"http://localhost:8080/api"
+})
+
+Modified:
+
+page.tsx
+
+Flow:
+
+Next.js
+     ↓
+Axios
+     ↓
+Spring Boot

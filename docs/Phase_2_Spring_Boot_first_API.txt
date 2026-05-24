@@ -1,0 +1,15 @@
+Created:
+
+HelloController
+
+API:
+
+GET /api/test
+
+Response:
+
+Career Match Backend Running
+
+Result:
+
+Backend alive

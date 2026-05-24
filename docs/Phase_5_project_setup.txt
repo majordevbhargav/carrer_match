@@ -1,0 +1,290 @@
+Installed:
+
+PostgreSQL
+
+Installed:
+
+JDBC Driver
+
+Configured:
+properties:
+spring.datasource.url
+spring.datasource.username
+spring.datasource.password
+Goal:
+
+Spring Boot
+     ↓
+PostgreSQL
+Phase 7: First database entity
+
+Created:
+
+entity/User.java
+
+Entity:
+
+@Entity
+@Table(name="users")
+public class User {
+
+private Long id;
+private String fullName;
+private String email;
+private String password;
+
+}
+
+Purpose:
+
+Java Object
+      ↓
+JPA
+      ↓
+Database Table
+What you are building next
+
+Current step:
+
+User Entity
+      ↓
+Repository
+      ↓
+Service
+      ↓
+Controller
+      ↓
+API
+      ↓
+Database
+
+Remaining big roadmap:
+
+[████░░░░░░░░░░░] ~30%
+
+✓ Frontend
+✓ Backend
+✓ API communication
+✓ CORS
+✓ PostgreSQL
+✓ Entity creation
+
+Next:
+□ Repository
+□ Service
+□ Controller
+□ Registration API
+□ Login
+□ JWT
+□ User profiles
+□ Resume upload
+□ AI matching
+□ Auto-apply engine
+□ Deployment
+
+backend/
+└── helloapp/
+    ├── src/
+    │   └── main/
+    │       ├── java/
+    │       │   └── c/
+    │       │       └── example/
+    │       │           └── helloapp/
+    │       │
+    │       │               ├── HelloappApplication.java
+    │       │               │
+    │       │               ├── controller/
+    │       │               │      ├── HelloController.java
+    │       │               │      └── UserController.java
+    │       │               │
+    │       │               ├── service/
+    │       │               │      └── UserService.java
+    │       │               │
+    │       │               ├── repository/
+    │       │               │      └── UserRepository.java
+    │       │               │
+    │       │               ├── entity/
+    │       │               │      └── User.java
+    │       │               │
+    │       │               ├── config/
+    │       │               │      └── WebConfig.java
+    │       │               │
+    │       │               ├── dto/
+    │       │               │
+    │       │               └── security/
+    │       │
+    │       └── resources/
+    │              ├── application.properties
+    │              └── static/
+    │
+    ├── pom.xml
+    └── target/
+
+    Now what each folder does:
+
+controller/
+
+Receives requests from frontend.
+
+Example:
+
+Frontend:
+Click Register button
+        ↓
+Controller receives request
+
+Example:
+
+@PostMapping("/register")
+public User register(@RequestBody User user)
+
+Think:
+
+Controller = Reception desk 🛎️
+service/
+
+Contains business logic.
+
+Example:
+
+save user
+check email
+validate password
+call AI
+
+Think:
+
+Service = Brain 🧠
+repository/
+
+Talks to database.
+
+Example:
+
+userRepository.save()
+userRepository.findAll()
+
+Think:
+
+Repository = Database messenger 📦
+entity/
+
+Defines database tables.
+
+Example:
+
+@Entity
+public class User
+
+Think:
+
+Entity = Blueprint 📘
+config/
+
+Stores project configurations.
+
+Examples:
+
+CORS
+Database settings
+Beans
+
+Think:
+
+Config = Control room ⚙️
+dto/
+
+For transferring clean data between frontend and backend.
+
+Later:
+
+RegisterRequest.java
+LoginRequest.java
+UserResponse.java
+
+Instead of exposing full User objects.
+
+Think:
+
+DTO = Delivery box 📦
+security/
+
+Later for:
+
+JWT authentication
+Roles
+Permissions
+
+Think:
+
+Security = Gatekeeper 🔐
+
+Your flow later becomes:
+
+Next.js Frontend
+        ↓
+Controller
+        ↓
+Service
+        ↓
+Repository
+        ↓
+PostgreSQL
+
+And with AI:
+
+Resume Upload
+        ↓
+Controller
+        ↓
+AI Service
+        ↓
+OpenAI API
+        ↓
+Matching Engine
+        ↓
+Database
+
+Current progress:
+
+Career Match Backend
+
+[██████░░░░░░░] ~40%
+
+✓ Spring Boot
+✓ API
+✓ PostgreSQL
+✓ Entity
+□ Repository
+□ Service
+□ Controller
+□ JWT
+□ Resume system
+□ AI engine
+
+Current status of Career Match:
+
+✓ Frontend (Next.js)
+✓ Backend (Spring Boot)
+✓ Axios connection
+✓ CORS fixed
+✓ PostgreSQL connected
+✓ JPA configured
+✓ User.java entity created
+✓ users table created automatically
+
+What happened behind the scenes:
+
+User.java
+    ↓
+@Entity detected by Spring
+    ↓
+Hibernate generated SQL
+    ↓
+PostgreSQL created:
+
+users
+
+You now officially have:
+
+Frontend ↔ Backend ↔ Database

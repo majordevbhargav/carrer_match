@@ -1,0 +1,571 @@
+You now have the first working foundation of Career Match. Here's the complete journey from installation to the latest working backend flow. Think of it as your project travel log 📖
+
+1. Project idea and architecture
+
+Project:
+
+Career Match
+
+Goal:
+
+AI-powered career platform
+
+• LinkedIn-style profiles
+• Multiple resume upload
+• AI resume matching
+• Resume analysis
+• Auto application filling
+• Career recommendations
+
+Chosen architecture:
+
+Frontend:
+Next.js + React + TypeScript
+
+Backend:
+Java + Spring Boot
+
+Database:
+PostgreSQL
+
+Communication:
+Axios + REST APIs
+
+Future AI:
+OpenAI API
+NLP
+Embeddings
+Vector Search
+
+Overall system:
+
+Frontend
+    ↓
+Axios
+    ↓
+Spring Boot
+    ↓
+Service Layer
+    ↓
+Repository Layer
+    ↓
+PostgreSQL
+    ↓
+Future AI Layer
+2. Environment setup
+
+Installed:
+
+✓ VS Code
+✓ Java JDK 21
+✓ Spring Boot
+✓ PostgreSQL
+✓ pgAdmin
+✓ Node.js
+✓ Next.js
+✓ Axios
+✓ JDBC driver
+✓ Spring dependencies
+
+Project folders:
+
+Career-Match/
+
+backend/
+frontend/
+3. Frontend setup
+
+Created Next.js project.
+
+Structure:
+
+frontend/
+
+src/
+   app/
+   components/
+   services/
+
+Installed:
+
+npm install axios
+
+Created:
+
+src/services/api.ts
+
+Code:
+
+import axios from "axios";
+
+const api = axios.create({
+ baseURL:"http://localhost:8080/api"
+});
+
+export default api;
+
+Purpose:
+
+Frontend
+     ↓
+Sends API requests
+4. Backend setup
+
+Created Spring Boot project.
+
+Structure:
+
+backend/
+
+src/main/java/
+
+Created:
+
+HelloController.java
+
+Code:
+
+@RestController
+@RequestMapping("/api")
+public class HelloController {
+
+    @GetMapping("/test")
+    public String hello(){
+        return "Career Match Backend Running";
+    }
+}
+
+Purpose:
+
+Check backend status
+
+Output:
+
+Career Match Backend Running
+5. Frontend to backend connection
+
+Modified frontend page:
+
+"use client";
+
+import {useEffect,useState} from "react";
+import api from "@/services/api";
+
+export default function Home(){
+
+const [message,setMessage]=useState("");
+
+useEffect(()=>{
+
+api.get("/test")
+.then((response)=>{
+
+setMessage(response.data);
+
+});
+
+},[]);
+
+return(
+<div>
+<h1>Career Match</h1>
+<p>{message}</p>
+</div>
+);
+
+}
+
+Flow:
+
+Browser
+    ↓
+Next.js
+    ↓
+Axios
+    ↓
+Spring Boot
+6. CORS issue and solution
+
+Problem:
+
+CORS error
+
+Cause:
+
+Frontend localhost:3000
+Backend localhost:8080
+
+Different origins
+
+Solution:
+
+@CrossOrigin(origins="http://localhost:3000")
+
+Result:
+
+Frontend and backend connected
+7. PostgreSQL setup
+
+Created database:
+
+career_match
+
+Configured:
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/career_match
+
+spring.datasource.username=postgres
+
+spring.datasource.password=YOUR_PASSWORD
+
+spring.jpa.hibernate.ddl-auto=update
+
+spring.jpa.show-sql=true
+
+Purpose:
+
+Connect Spring Boot to PostgreSQL
+8. JPA dependency setup
+
+Problem:
+
+jakarta.persistence cannot be resolved
+
+Cause:
+
+Missing JPA dependency
+
+Added:
+
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+9. Entity creation
+
+Created:
+
+entity/User.java
+
+Code:
+
+@Entity
+@Table(name="users")
+public class User{
+
+@Id
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+private Long id;
+
+private String fullName;
+
+private String email;
+
+private String password;
+
+}
+
+Purpose:
+
+Java Object
+      ↓
+Database table
+
+Generated SQL:
+
+users
+
+id
+fullName
+email
+password
+10. Package scanning issue
+
+Problem:
+
+Found 0 JPA repository interfaces
+
+Cause:
+
+Entity package outside Spring scan path
+
+Wrong:
+
+com.careermatch.entity
+
+Correct:
+
+c.example.helloapp.entity
+
+Rule:
+
+Everything stays under main package
+
+Correct structure:
+
+src/main/java/
+
+c/example/helloapp/
+
+├── HelloappApplication.java
+├── controller/
+├── service/
+├── repository/
+└── entity/
+11. Repository layer
+
+Created:
+
+UserRepository.java
+
+Code:
+
+public interface UserRepository
+extends JpaRepository<User,Long>{
+
+}
+
+Purpose:
+
+Database communication
+
+Built-in methods:
+
+save()
+
+findAll()
+
+findById()
+
+delete()
+12. Service layer
+
+Created:
+
+UserService.java
+
+Code:
+
+@Service
+public class UserService{
+
+@Autowired
+UserRepository userRepository;
+
+public User saveUser(User user){
+
+return userRepository.save(user);
+
+}
+
+public List<User> getUsers(){
+
+return userRepository.findAll();
+
+}
+
+}
+
+Purpose:
+
+Business logic
+13. Controller layer
+
+Created:
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController{
+
+@Autowired
+UserService userService;
+
+@PostMapping("/register")
+public User register(@RequestBody User user){
+
+return userService.saveUser(user);
+
+}
+
+@GetMapping
+public List<User> getUsers(){
+
+return userService.getUsers();
+
+}
+
+}
+
+Endpoints created:
+
+POST /api/users/register
+
+GET /api/users
+14. API testing
+
+Installed/used:
+
+Thunder Client
+
+Request:
+
+{
+ "fullName":"Dev Bhargav",
+ "email":"dev@gmail.com",
+ "password":"12345"
+}
+
+Response:
+
+{
+ "email":"dev@gmail.com",
+ "fullName":"Dev Bhargav",
+ "id":3,
+ "password":"12345"
+}
+
+Meaning:
+
+id=3 generated automatically by PostgreSQL
+15. Complete current flow
+
+You built:
+
+Thunder Client
+       ↓
+POST Request
+       ↓
+UserController
+       ↓
+UserService
+       ↓
+UserRepository
+       ↓
+PostgreSQL
+
+For reading users:
+
+Browser
+     ↓
+GET /api/users
+     ↓
+Controller
+     ↓
+Service
+     ↓
+Repository
+     ↓
+Database
+Best practices if doing this again
+1. Decide package structure before writing code
+
+Good:
+
+com/careermatch/
+
+controller/
+service/
+repository/
+entity/
+config/
+security/
+dto/
+
+Avoid moving packages later.
+
+2. Commit frequently
+
+After each milestone:
+
+git add .
+git commit -m "Backend connected"
+
+Examples:
+
+git commit -m "Added PostgreSQL"
+git commit -m "Added user registration API"
+git commit -m "Fixed CORS"
+3. Use DTOs instead of exposing entities
+
+Instead of:
+
+@PostMapping
+public User register(...)
+
+Later use:
+
+RegisterRequest
+RegisterResponse
+4. Never store passwords directly
+
+Right now:
+
+password = "12345"
+
+Later:
+
+BCryptPasswordEncoder
+
+Store:
+
+$2a$10$kdl39.....
+
+instead of real passwords.
+
+5. Add JWT authentication before building major features
+
+Flow:
+
+Login
+    ↓
+JWT Token
+    ↓
+Protected APIs
+6. Build features in layers
+
+Good order:
+
+Database
+↓
+Entity
+↓
+Repository
+↓
+Service
+↓
+Controller
+↓
+Frontend
+↓
+AI
+
+Not:
+
+AI first ❌
+
+Current project progress:
+
+Career Match
+
+[███████░░░░░░░░] ~45%
+
+✓ Setup
+✓ Frontend
+✓ Backend
+✓ API communication
+✓ PostgreSQL
+✓ Entity
+✓ Repository
+✓ Service
+✓ Controller
+✓ Register API
+✓ Data stored in database
+
+Next:
+□ Registration page UI
+□ Login
+□ JWT authentication
+□ User profile
+□ Resume upload
+□ AI matching
+□ Auto apply engine

@@ -1,0 +1,21 @@
+Problem:
+
+CORS blocked frontend request
+
+Fix:
+
+@CrossOrigin(origins="http://localhost:3000")
+
+Result:
+
+Frontend and backend could communicate
+
+Architecture became:
+
+Browser
+    ↓
+Next.js
+    ↓
+Axios
+    ↓
+Spring Boot
