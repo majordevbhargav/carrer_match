@@ -288,3 +288,486 @@ users
 You now officially have:
 
 Frontend ↔ Backend ↔ Database
+Current state:
+
+✓ Next.js frontend running
+✓ Spring Boot backend running
+✓ PostgreSQL connected
+✓ users table created
+✓ User registration API working
+✓ Data stored in database
+
+Now we move into real Career Match feature development.
+
+Career Match development roadmap
+Phase 1: Authentication System
+    ↓
+Phase 2: User Profile
+    ↓
+Phase 3: Resume Upload
+    ↓
+Phase 4: AI Resume Analysis
+    ↓
+Phase 5: Job Matching
+    ↓
+Phase 6: Auto Application Engine
+Start with Phase 1: Authentication
+
+Right now:
+
+User exists
+
+But:
+
+No login
+No security
+No authentication
+
+We build:
+
+Register
+      ↓
+Login
+      ↓
+JWT token
+      ↓
+Protected routes
+Current Career Match backend status:
+
+✓ Spring Boot setup
+✓ PostgreSQL connected
+✓ User Entity
+✓ Repository
+✓ Service
+✓ Controller
+✓ Registration API
+✓ Login API
+✓ DTO
+✓ User role system
+✓ Data stored and retrieved
+
+Current flow:
+
+Register
+    ↓
+Database
+    ↓
+Login
+    ↓
+Validate email/password
+
+But right now there is a security hole:
+
+Anyone can call APIs directly ❌
+Passwords are plain text ❌
+No session management ❌
+
+Next step:
+
+JWT Authentication 🔐
+
+Future flow becomes:
+
+Register
+      ↓
+Login
+      ↓
+Generate JWT token
+      ↓
+Store token in frontend
+      ↓
+Send token with requests
+      ↓
+Protected APIs
+Current Career Match backend status:
+
+✓ Spring Boot running
+✓ PostgreSQL connected
+✓ User entity
+✓ Repository
+✓ Service
+✓ Controller
+✓ Register API
+✓ Login API
+✓ DTO
+✓ Role field
+✓ Spring Security configured
+✓ Frontend ↔ Backend connection
+
+Current request flow:
+
+Frontend
+    ↓
+Axios
+    ↓
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+PostgreSQL
+
+You crossed the "setup jungle" and reached feature territory 🌳➡️🏙️
+
+Now we move to the next major thing:
+Phase 1 completion: JWT Authentication 🔐
+
+Right now login returns:
+
+{
+ "id":3,
+ "fullName":"Dev Bhargav",
+ "email":"dev@gmail.com",
+ "password":"12345",
+ "role":"USER"
+}
+
+But in a real app it should return:
+
+{
+ "token":"eyJhbGciOiJIUzI1Ni..."
+}
+
+Why?
+
+User logs in
+      ↓
+Server creates token
+      ↓
+Frontend stores token
+      ↓
+Frontend sends token later
+      ↓
+Protected APIs verify token
+
+Before creating JWT code, one important improvement:
+
+Right now passwords are stored as:
+
+12345
+
+Real apps never do that.
+
+Next immediate step:
+
+Password encryption
+        ↓
+BCrypt
+        ↓
+JWT
+Plain password ❌
+        ↓
+BCrypt ✓
+        ↓
+JWT ✓
+        ↓
+Strong password rules ✓
+        ↓
+Email verification ✓
+Current Career Match status:
+
+✓ Next.js frontend setup
+✓ Spring Boot backend setup
+✓ PostgreSQL connected
+✓ User Entity
+✓ Repository
+✓ Service
+✓ Controller
+✓ Register API
+✓ Login API
+✓ DTO
+✓ Spring Security
+✓ BCrypt password encryption
+
+Current backend flow:
+
+Register
+     ↓
+Password encrypted
+     ↓
+Database stores hash
+     ↓
+Login
+     ↓
+User verification
+
+Now the next major step is the real authentication engine:
+JWT Authentication 🔐
+
+Current login response:
+
+{
+   "id":4,
+   "fullName":"Dev Bhargav",
+   "email":"dev@gmail.com",
+   "password":"$2a$10$..."
+}
+
+Target response:
+
+{
+   "token":"eyJhbGciOiJIUzI1Ni..."
+}
+
+Future flow:
+
+User Login
+      ↓
+Verify email/password
+      ↓
+Generate JWT token
+      ↓
+Frontend stores token
+      ↓
+Protected APIs use token
+
+First we create the token generator.
+Your flow has transformed from:
+
+Login
+   ↓
+Return User object
+
+to:
+
+Login
+   ↓
+Verify password (BCrypt)
+   ↓
+Generate JWT
+   ↓
+Return Token
+
+Example of what just happened internally:
+
+User:
+email = dev@gmail.com
+password = 12345
+
+        ↓
+
+Spring checks password hash
+
+        ↓
+
+JWT creates:
+
+eyJhbGciOiJIUzI1Ni...
+
+        ↓
+
+Frontend receives token
+
+Current Career Match progress:
+
+[███████████░░░░] ~65%
+
+✓ Next.js setup
+✓ Spring Boot setup
+✓ PostgreSQL
+✓ Axios
+✓ Entity layer
+✓ Repository layer
+✓ Service layer
+✓ Controller layer
+✓ Registration
+✓ Login
+✓ DTOs
+✓ BCrypt
+✓ Spring Security
+✓ JWT generation
+
+Now comes the important missing piece:
+
+Right now your token is generated...
+
+Token exists ✓
+
+but:
+
+Token is NOT being checked yet ❌
+
+Anyone can still access APIs.
+
+Next step:
+
+JWT Filter
+        ↓
+Read token from request
+        ↓
+Validate token
+        ↓
+Allow/deny access
+
+Future request flow:
+
+Frontend
+   ↓
+Authorization: Bearer eyJhbGci...
+   ↓
+JWT Filter
+   ↓
+Security Layer
+   ↓
+Controller
+
+This is the point where Career Match starts becoming a real protected application instead of a building with an unlocked front door
+Current Career Match status:
+
+✓ Spring Boot backend
+✓ PostgreSQL
+✓ User Entity
+✓ Repository layer
+✓ Service layer
+✓ Controller layer
+✓ Registration API
+✓ Login API
+✓ DTOs
+✓ BCrypt password hashing
+✓ JWT generation
+✓ JWT validation
+✓ JWT filter
+✓ Protected APIs
+✓ Security configuration
+
+Request flow now:
+
+User Login
+      ↓
+BCrypt verifies password
+      ↓
+JWT generated
+      ↓
+Frontend receives token
+      ↓
+Request sent with token
+      ↓
+JwtFilter validates
+      ↓
+Access granted
+
+You now have a real authentication system instead of:
+
+if(password.equals(...))
+
+ evolution complete.
+
+Now comes the exciting Career Match specific features:
+
+Phase 2
+
+✓ Authentication complete
+
+Next:
+□ Resume Upload
+□ Store PDFs in backend
+□ Resume parser
+□ AI extraction of skills
+□ Job profile database
+□ AI matching score
+□ Auto application system
+□ LinkedIn-style profile/dashboard
+
+Start with Resume Upload API because almost everything later depends on it:
+
+Upload Resume
+      ↓
+Extract text
+      ↓
+Extract skills
+      ↓
+Match with jobs
+      ↓
+Auto-fill applications
+backend
+└── helloapp
+    └── src
+        └── main
+            └── java
+                └── c
+                    └── example
+                        └── helloapp
+                            ├── controller
+                            │      UserController.java
+                            │      ResumeController.java
+                            │
+                            ├── service
+                            │      UserService.java
+                            │      ResumeService.java
+                            │
+                            ├── repository
+                            │      UserRepository.java
+                            │
+                            ├── entity
+                            │      User.java
+                            │
+                            ├── dto
+                            │      LoginRequest.java
+                            │      LoginResponse.java
+                            │
+                            ├── security
+                            │      JwtService.java
+                            │      JwtFilter.java
+                            │      SecurityConfig.java
+                            │
+                            └── HelloappApplication.java
+
+backend
+└── helloapp
+    ├── uploads
+    │      resumes_here.pdf
+    │
+    ├── src
+    ├── pom.xml
+    └── mvnw                           
+    o:
+
+Create ResumeController.java here
+
+src/main/java/c/example/helloapp/controller/
+
+Create ResumeService.java here
+
+src/main/java/c/example/helloapp/service/
+
+Create uploads folder here
+
+helloapp/uploads/
+
+Why the uploads folder stays outside src:
+
+src/
+    ↓
+Application code
+
+uploads/
+    ↓
+User files
+
+You do not want uploaded resumes buried inside source code. Otherwise every uploaded PDF becomes tangled into the project vines 🌿
+
+Next after creating these, we'll build:
+
+POST /api/resume/upload
+
+so users can upload PDF resumes directly into Career Match.
+Resume.pdf
+      ↓
+Upload
+      ↓
+Store
+      ↓
+Extract text
+      ↓
+Extract skills
+
+Now comes the next big leap:
+
+Extract skills
+      ↓
+Save them in database
+      ↓
+Compare with jobs
+      ↓
+Generate match %
