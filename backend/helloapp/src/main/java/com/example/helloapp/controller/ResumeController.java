@@ -1,25 +1,24 @@
 package com.example.helloapp.controller;
 
+import com.example.helloapp.dto.ResumeResponse;
+import com.example.helloapp.service.ResumeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.example.helloapp.service.ResumeService;
 
 @RestController
 @RequestMapping("/api/resume")
-@CrossOrigin(origins="http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ResumeController {
 
     @Autowired
-    ResumeService resumeService;
+    private ResumeService resumeService;
 
-    @PostMapping("/upload")
-    public String uploadResume(
-            @RequestParam("file")
-            MultipartFile file){
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResumeResponse uploadResume(
+            @RequestParam("file") MultipartFile file) {
 
-        return resumeService
-                .uploadResume(file);
+        return resumeService.uploadResume(file);
     }
 }

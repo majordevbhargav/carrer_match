@@ -1,28 +1,24 @@
 package com.example.helloapp.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
-    JwtFilter jwtFilter;
-
     @Bean
-    SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http)
+            throws Exception {
 
         return http
-
                 .csrf(csrf -> csrf.disable())
+
+                .cors(cors -> {})
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
@@ -32,20 +28,17 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers(
-                                "/api/users/register",
-                                "/api/users/login",
-                                "/api/resume/upload"
-                        )
-                        .permitAll()
+                        // Allow all your APIs
+                        .requestMatchers("/api/**").permitAll()
 
-                        .anyRequest()
-                        .authenticated()
-                )
+                        // Allow analytics endpoint too
+                        .requestMatchers("/analytics").permitAll()
 
-                .addFilterBefore(
-                        jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class
+                        // Allow resume upload
+                        .requestMatchers("/resume/**").permitAll()
+
+                        // Allow everything else temporarily
+                        .anyRequest().permitAll()
                 )
 
                 .build();

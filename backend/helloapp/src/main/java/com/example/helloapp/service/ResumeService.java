@@ -1,15 +1,22 @@
 package com.example.helloapp.service;
-import com.example.helloapp.service.JobService;
+
+import com.example.helloapp.dto.ResumeResponse;
+import com.example.helloapp.entity.ResumeAnalysis;
+import com.example.helloapp.repository.ResumeAnalysisRepository;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,157 +24,223 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ResumeService {
 
-    // Creates uploads folder inside project directory
-    private final String UPLOAD_DIR =
-        Paths.get(
-                "backend",
-                "helloapp",
-                "uploads"
-        ).toAbsolutePath().toString();
+        @Autowired
+        private JobService jobService;
 
-    public String uploadResume(MultipartFile file) {
+        @Autowired
+        private ResumeAnalysisRepository resumeAnalysisRepository;
 
-        try {
+        private final String UPLOAD_DIR = Paths.get(
+                        "backend",
+                        "helloapp",
+                        "uploads")
+                        .toAbsolutePath()
+                        .toString();
 
-            // Create uploads folder if it doesn't exist
-            File directory = new File(UPLOAD_DIR);
+        public ResumeResponse uploadResume(
+                        MultipartFile file) {
 
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
+                try {
 
-            // Get original filename
-            String fileName = file.getOriginalFilename();
+                        File directory = new File(
+                                        UPLOAD_DIR);
 
-            // Create destination file
-            File destination = new File(
-                    directory,
-                    fileName
-            );
+                        if (!directory.exists()) {
 
-            // Print save path in console
-            System.out.println(
-                    "Saving to: "
-                    + destination.getAbsolutePath()
-            );
+                                directory.mkdirs();
+                        }
 
-            // Save file
-            file.transferTo(destination);
+                        String fileName = file.getOriginalFilename();
 
-            String extractedText =
-        extractText(
-                destination.getAbsolutePath()
-        );
+                        File destination = new File(
+                                        directory,
+                                        fileName);
 
-List<String> skills =
-        extractSkills(
-                extractedText
-        );
+                        System.out.println(
+                                        "Saving to: "
+                                                        + destination.getAbsolutePath());
 
-System.out.println(
-        "Detected Skills:"
-);
+                        file.transferTo(
+                                        destination);
 
-Map<String,Integer> matches =
-        jobService.matchJobs(
-                skills
-        );
+                        String extractedText = extractText(
+                                        destination
+                                                        .getAbsolutePath());
 
-System.out.println(
-        "Job Matches:"
-);
+                        List<String> skills = extractSkills(
+                                        extractedText);
 
-System.out.println(
-        matches
-);
+                        System.out.println(
+                                        "Detected Skills:");
 
-System.out.println(
-        extractedText
-);
+                        System.out.println(
+                                        skills);
 
-return "Resume Uploaded Successfully";
+                        Map<String, Integer> matches = jobService.matchJobs(
+                                        skills);
 
+                        List<String> topJobs = jobService.getTopJobs(
+                                        matches);
+
+                        int score = jobService
+                                        .calculateResumeScore(
+                                                        skills);
+                        String feedback = jobService.generateFeedback(
+                                        skills,
+                                        score);
+
+                        Map<String, List<String>> missingSkills = jobService
+                                        .findMissingSkills(
+                                                        skills);
+
+                        Map<String, List<String>> courses = jobService
+                                        .recommendCourses(
+                                                        missingSkills);
+
+                        ResumeResponse response = new ResumeResponse();
+
+                        response.setSkills(
+                                        skills);
+
+                        response.setJobMatches(
+                                        matches);
+
+                        response.setMissingSkills(
+                                        missingSkills);
+
+                        response.setRecommendedCourses(
+                                        courses);
+
+                        response.setTopJobs(
+                                        topJobs);
+
+                        response.setResumeScore(
+                                        score);
+
+                        ResumeAnalysis analysis = new ResumeAnalysis();
+
+                        analysis.setEmail(
+                                        "currentUser@gmail.com");
+
+                        analysis.setResumeName(
+                                        fileName);
+
+                        analysis.setUploadDate(
+                                        LocalDateTime.now());
+
+                        analysis.setSkills(
+                                        skills.toString());
+
+                        analysis.setJobMatches(
+                                        matches.toString());
+
+                        System.out.println(
+                                        "Saving analysis for: "
+                                                        + fileName);
+
+                        resumeAnalysisRepository
+                                        .save(
+                                                        analysis);
+
+                        response.setFeedback(
+                                        feedback);
+
+                        return response;
+
+                }
+
+                catch (IOException e) {
+
+                        e.printStackTrace();
+
+                        ResumeResponse response = new ResumeResponse();
+
+                        response.setSkills(
+                                        new ArrayList<>());
+
+                        response.setJobMatches(
+                                        new HashMap<>());
+
+                        response.setMissingSkills(
+                                        new HashMap<>());
+
+                        response.setRecommendedCourses(
+                                        new HashMap<>());
+
+                        response.setTopJobs(
+                                        new ArrayList<>());
+                        response.setResumeScore(
+                                        0);
+                        response.setFeedback(
+                                        "Could not analyze resume.");
+
+                        return response;
+                }
         }
 
-        catch (IOException e) {
+        public String extractText(
+                        String filePath) {
 
-            e.printStackTrace();
+                try {
 
-            return "Upload Failed: "
-                    + e.getMessage();
+                        File file = new File(filePath);
+
+                        PDDocument document = Loader.loadPDF(
+                                        file);
+
+                        PDFTextStripper stripper = new PDFTextStripper();
+
+                        String text = stripper.getText(
+                                        document);
+
+                        document.close();
+
+                        return text;
+                }
+
+                catch (Exception e) {
+
+                        e.printStackTrace();
+
+                        return "Could not extract text";
+                }
         }
-    }
-    public String extractText(String filePath){
 
-    try{
+        public List<String> extractSkills(
+                        String text) {
 
-        File file = new File(filePath);
+                List<String> allSkills = List.of(
 
-        PDDocument document =
-                Loader.loadPDF(file);
+                                "Java",
+                                "Spring Boot",
+                                "React",
+                                "Node.js",
+                                "Python",
+                                "MongoDB",
+                                "PostgreSQL",
+                                "HTML",
+                                "CSS",
+                                "JavaScript",
+                                "TypeScript",
+                                "AWS",
+                                "Docker",
+                                "Git",
+                                "Machine Learning",
+                                "SQL");
 
-        PDFTextStripper pdfStripper =
-                new PDFTextStripper();
+                List<String> foundSkills = new ArrayList<>();
 
-        String text =
-                pdfStripper.getText(document);
+                for (String skill : allSkills) {
 
-        document.close();
+                        if (text.toLowerCase()
+                                        .contains(
+                                                        skill.toLowerCase())) {
 
-        return text;
+                                foundSkills.add(
+                                                skill);
+                        }
+                }
 
-    }
-
-    catch(Exception e){
-
-        e.printStackTrace();
-
-        return "Could not extract text";
-    }
-
-}
-public List<String> extractSkills(
-        String text){
-
-    List<String> allSkills =
-            List.of(
-
-            "Java",
-            "Spring Boot",
-            "React",
-            "Node.js",
-            "Python",
-            "MongoDB",
-            "PostgreSQL",
-            "HTML",
-            "CSS",
-            "JavaScript",
-            "TypeScript",
-            "AWS",
-            "Docker",
-            "Git",
-            "Machine Learning",
-            "SQL"
-
-    );
-
-    List<String> foundSkills =
-            new ArrayList<>();
-
-    for(String skill : allSkills){
-
-        if(text.toLowerCase()
-                .contains(
-                        skill.toLowerCase()
-                )){
-
-            foundSkills.add(skill);
-
+                return foundSkills;
         }
-    }
-
-    return foundSkills;
-}
-@Autowired
-JobService jobService;
 }
