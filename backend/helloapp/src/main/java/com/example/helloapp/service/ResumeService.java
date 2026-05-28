@@ -137,6 +137,7 @@ public class ResumeService {
                         System.out.println(
                                         "Saving analysis for: "
                                                         + fileName);
+                        analysis.setResumeScore(score);
 
                         resumeAnalysisRepository
                                         .save(

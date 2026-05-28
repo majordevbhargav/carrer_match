@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.helloapp.service.AnalyticsService;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -19,7 +18,18 @@ public class AnalyticsController {
     public Map<String, Object> getAnalytics() {
 
         return Map.of(
+
                 "totalUploads",
-                analyticsService.getTotalUploads());
+                analyticsService.getTotalUploads(),
+
+                "averageScore",
+                analyticsService.getAverageScore(),
+
+                "mostCommonSkill",
+                analyticsService.getMostCommonSkill(),
+
+                "skillFrequency",
+                analyticsService.getSkillFrequency()
+        );
     }
 }
