@@ -18,6 +18,8 @@ public class ResumeAnalysis {
     private LocalDateTime uploadDate;
 
     private int resumeScore;
+    
+    private String targetRole;
 
     @Column(columnDefinition = "TEXT")
     private String skills;

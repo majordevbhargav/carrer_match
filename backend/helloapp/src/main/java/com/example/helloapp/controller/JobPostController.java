@@ -26,8 +26,7 @@ public class JobPostController {
             @RequestBody JobPost jobPost) {
 
         return jobPostRepository.save(
-                jobPost
-        );
+                jobPost);
     }
 
     @GetMapping("/search")
@@ -36,7 +35,6 @@ public class JobPostController {
 
         return jobPostRepository
                 .findByTitleContainingIgnoreCase(
-                        keyword
-                );
+                        keyword);
     }
 }

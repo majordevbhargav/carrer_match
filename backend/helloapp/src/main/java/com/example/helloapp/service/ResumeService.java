@@ -134,9 +134,6 @@ public class ResumeService {
                         analysis.setJobMatches(
                                         matches.toString());
 
-                        System.out.println(
-                                        "Saving analysis for: "
-                                                        + fileName);
                         analysis.setResumeScore(score);
 
                         resumeAnalysisRepository
@@ -145,6 +142,9 @@ public class ResumeService {
 
                         response.setFeedback(
                                         feedback);
+                        System.out.println(
+                                        "Saving analysis for: "
+                                                        + fileName);
 
                         return response;
 
