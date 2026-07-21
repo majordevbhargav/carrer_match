@@ -1,6 +1,6 @@
 # Career Match
 
-AI-powered platform that analyzes resumes and matches job seekers to suitable roles based on their skills and experience — automating a process that's traditionally manual and time-consuming.
+AI-powered platform that analyzes resumes and matches job seekers to suitable roles based on their skills and experience  automating a process that's traditionally manual and time-consuming.
 
 ## Overview
 
